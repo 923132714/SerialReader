@@ -1,0 +1,10 @@
+
+build/*
+spec/*
+venv/*
+test.bat
+
+.idea/*
+__pycache__/*
+fresh_air_data.xls
+file_version_info.txt
