@@ -9,8 +9,11 @@ from MySerial import MySerial
 myserial = MySerial()
 if myserial.connect_serial():
     while myserial.read_line():
-        #result = myserial.save_serial_data_to_mysql()
-        result = myserial.save_serial_data_to_excel()
+        # save to mysql
+        result = myserial.save_serial_data_to_mysql()
+
+        # save to excel
+        # result = myserial.save_serial_data_to_excel()
         if result is None :
             print("save failure")
         elif result > 0  :

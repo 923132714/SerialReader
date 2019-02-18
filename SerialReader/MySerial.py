@@ -47,12 +47,11 @@ class MySerial(object):
         print("in waitting byte :%s"%self.__ser.inWaiting())
         self.__ser.reset_input_buffer()
         RX_BUF = self.__ser.read(16)
-        print("RX_BUF %s"%RX_BUF.hex())
+        # print("RX_BUF %s"%RX_BUF.hex())
 
         rx_buffer = RXBuffer(RX_BUF)
 
-        # print(RX_BUF)
-        # print(type(RX_BUF))
+
 
         if not rx_buffer.data_identification():
             return None

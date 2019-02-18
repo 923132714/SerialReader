@@ -1,10 +1,18 @@
 
-build/*
-spec/*
-venv/*
-test.bat
+SerialReader/build/*
 
-.idea/*
-__pycache__/*
-fresh_air_data.xls
-file_version_info.txt
+SerialReader/spec/*
+
+SerialReader/venv/*
+
+SerialReader/test.bat
+
+
+SerialReader/.idea/*
+
+SerialReader/__pycache__/*
+
+SerialReader/fresh_air_data.xls
+
+
+SerialReader/file_version_info.txt
