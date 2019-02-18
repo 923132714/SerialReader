@@ -6,7 +6,7 @@ import serial.tools.list_ports
 
 
 from RXBuffer import RXBuffer
-import serial_DB
+from db import serial_DB
 from excel_save import Excel_io
 
 

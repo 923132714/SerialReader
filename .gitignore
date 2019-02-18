@@ -16,3 +16,4 @@ SerialReader/fresh_air_data.xls
 
 
 SerialReader/file_version_info.txt
+*.pyc
