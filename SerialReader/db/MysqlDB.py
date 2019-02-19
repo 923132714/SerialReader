@@ -7,8 +7,10 @@
 """
 import pymysql
 
+from db.Memory import Memory
 
-class MysqlDB:
+
+class MysqlDB(Memory):
     # 连接配置信息
     config = {
         'host': '127.0.0.1',
@@ -70,7 +72,7 @@ class MysqlDB:
             self.db.rollback()
             return False
 
-    def select_air_quality_data(self, line=8):
+    def select_air_quality_data(self, line=50):
         serials_data ={}
         sql = """SELECT id,pm2,pm10,temp,humi,addr,time 
         from fresh_air ORDER BY id DESC LIMIT %s""" %\
@@ -83,12 +85,12 @@ class MysqlDB:
                 print(conut)
                 # 查询数据
                 result = cursor.fetchall()      # 查询所有数据
-                # print(result)
+                print(result)
 
                 # {'id': 93, 'pm2': 125.0, 'pm10': 143.0,
                 #  'temp': 28.0, 'humi': 23.0, 'addr': 15,
                 #  'time': datetime.datetime(2019, 2, 19, 13, 1, 32)}
-                return result
+                return result[::-1]
         except:
             print("something error ")
             self.db.rollback()
