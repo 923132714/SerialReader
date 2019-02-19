@@ -7,6 +7,7 @@ import serial.tools.list_ports
 
 from RXBuffer import RXBuffer
 from db import serial_DB
+from db.MysqlDB import MysqlDB
 from excel_save import Excel_io
 
 
@@ -71,9 +72,13 @@ class MySerial(object):
 
         if self.__pm2 and self.__pm10 and self.__temp and\
                 self.__humi and   self.__addr and  self.__datetime:
-            result = serial_DB.commit_air_quality_data(
-                self.__pm2, self.__pm10, self.__temp,
-                self.__humi, self.__addr, self.__datetime)
+
+            serial_data = {"pm2.5": self.__pm2, "pm10": self.__pm10,
+                           "temp": self.__temp, 'humi': self.__humi,
+                           "addr": self.__addr, "time": self.__datetime}
+            print(serial_data)
+            with MysqlDB() as mydb:
+                result = mydb.commit_air_quality_data(serial_data)
 
             return result
         else:

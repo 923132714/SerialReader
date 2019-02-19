@@ -5,11 +5,11 @@ import os
 
 from MySerial import MySerial
 
-
 myserial = MySerial()
 if myserial.connect_serial():
     while myserial.read_line():
         # save to mysql
+
         result = myserial.save_serial_data_to_mysql()
 
         # save to excel
