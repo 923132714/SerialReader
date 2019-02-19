@@ -23,7 +23,7 @@ if myserial.connect_serial():
         else:
             print("some thing error" + str(result))
             os._exit(result)
-        time.sleep(10)
+        time.sleep(100)
 else:
     print("None equipment")
 
