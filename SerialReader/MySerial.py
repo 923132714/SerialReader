@@ -68,6 +68,7 @@ class MySerial(object):
             return True
 
 
+    @property
     def save_serial_data_to_mysql(self):
 
         if self.__pm2 and self.__pm10 and self.__temp and\
@@ -77,7 +78,7 @@ class MySerial(object):
                            "temp": self.__temp, 'humi': self.__humi,
                            "addr": self.__addr, "time": self.__datetime}
             print(serial_data)
-            with MysqlDB() as mydb:
+            with  MysqlDB() as mydb:
                 result = mydb.commit_air_quality_data(serial_data)
 
             return result
