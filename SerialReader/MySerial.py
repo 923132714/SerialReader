@@ -23,15 +23,26 @@ class MySerial(object):
             print("Unable to find port list.")
             return None
         else:
-            comlist_0 =list(plist[0])
-            print("COM list:")
-            print(comlist_0)
-        return comlist_0
+            return plist
+
+
 
     def __get_serial_name(self):
 
-        comlist_0 = self.__get_serial_list();
-        self.__serial_name = comlist_0[0]
+        plist = self.__get_serial_list();
+
+        lens = len(plist)
+        com = lens+1
+        while not com<=lens and com > 0:
+            print("COM list:")
+            for i in range(0,lens):
+                print("(",i+1,")", plist[i])
+            com = int(input("select COM with input number:"))
+
+        comlist  = list(plist[com-1])
+        print("COM info:")
+        print(comlist)
+        self.__serial_name = comlist[0]
         print("connect serial " + self.__serial_name)
 
         return self.__serial_name
@@ -110,3 +121,10 @@ class MySerial(object):
         return """pm2 = %s, pm10 = %s,temp = %s, humi = %s,"""\
                """addr = %s, datetime = %s"""%\
                (self.__pm2,self.__pm10, self.__temp, self.__humi,self.__addr,self.__datetime)
+
+if __name__ == "__main__":
+    hh = ["asda","safa"]
+    print(len(hh))
+    com = int(input("select COM with input number:"))
+    print(com)
+    print(isinstance(com,int))
