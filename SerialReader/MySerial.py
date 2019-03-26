@@ -5,13 +5,15 @@ import serial.tools.list_ports
 
 
 
-from model.RXBuffer import RXBuffer
+from model.FADItem import FADItem
 from db.MysqlDB import MysqlDB
 from db.excel_save import Excel_io
 
 
 class MySerial(object):
 
+    SLEN = 16 # item length
+    fa_data_buffer = [] # data buffer
 
     def __init__(self):
        pass
@@ -54,31 +56,47 @@ class MySerial(object):
         if self.__ser: return self.__ser
         else:return None
 
-    def read_line(self):
+    def read_gift(self):
+        '''
+        Empty fa_data_buffer , read all sensor data and save to fa_data_buffer.
+        :return:
+        '''
+        self.fa_data_buffer = []
         print("in waitting byte :%s"%self.__ser.inWaiting())
         self.__ser.reset_input_buffer()
-        RX_BUF = self.__ser.read(16)
+        buffer = self.__ser.read(self.SLEN)
+
         # print("RX_BUF %s"%RX_BUF.hex())
 
-        rx_buffer = RXBuffer(RX_BUF)
+        # flag = self.__ser.inWaiting()//self.SLEN
+        flag = 3
+        self.packaged_data(buffer)
+        while flag:
+            flag-=1
+            buffer = self.__ser.read(self.SLEN)
+            self.packaged_data(buffer)
+        return True
 
+    def packaged_data(self, buffer):
+        '''
+        packaged all data, sava it to object.
+        :param buffer:serial_data
+        :return:
+        '''
 
-
-        if not rx_buffer.data_identification():
+        fad_item = FADItem(buffer)
+        if not fad_item.data_identification():
             return None
         else:
-            rx_buffer.data_check()
-            self.__pm2 = rx_buffer.get_pm2()
-            self.__pm10 = rx_buffer.get_pm10()
-            self.__temp = rx_buffer.get_temp()
-            self.__humi = rx_buffer.get_humi()
-            self.__addr = rx_buffer.get_addr()
-            self.__datetime = rx_buffer.get_datetime()
-            print("DATA[ "+self.to_string()+ " ]")
+            fad_item.data_check()
+            serial_data = {"pm2.5": fad_item.get_pm2(), "pm10":fad_item.get_pm10(),
+                           "temp": fad_item.get_temp(), 'humi': fad_item.get_humi(),
+                           "addr":fad_item.get_addr(), "time": fad_item.get_datetime()}
+            self.fa_data_buffer.append(serial_data)
+            print("DATA[ " + serial_data.__repr__() + " ]")
             return True
 
 
-    @property
     def save_serial_data_to_mysql(self):
 
         if self.__pm2 and self.__pm10 and self.__temp and\
@@ -97,30 +115,27 @@ class MySerial(object):
             return None
 
     def save_serial_data_to_excel(self):
+        '''
 
-        if self.__pm2 and self.__pm10 and self.__temp and\
-                self.__humi and   self.__addr and  self.__datetime:
+        :return:
+        '''
 
+        # if self.__pm2 and self.__pm10 and self.__temp and\
+        #         self.__humi and   self.__addr and  self.__datetime:
+        for serial_data in self.fa_data_buffer:
 
-            serial_data ={ "pm2.5":self.__pm2, "pm10":self.__pm10,
-            "temp":self.__temp, 'humi': self.__humi,
-            "addr": self.__addr, "time": self.__datetime}
             print(serial_data)
-            excel = Excel_io("fresh_air_data.xls")
+            excel = Excel_io("fresh_air_data_%a.xls"%serial_data["addr"])
 
             result = excel.write_data(serial_data)
+            print(result)
+        return True
 
-            return result
-        else:
-            print("Missing data ")
-            return None
-
-
-    def to_string(self):
-
-        return """pm2 = %s, pm10 = %s,temp = %s, humi = %s,"""\
-               """addr = %s, datetime = %s"""%\
-               (self.__pm2,self.__pm10, self.__temp, self.__humi,self.__addr,self.__datetime)
+    def __repr__(self):
+        return self.fa_data_buffer.__repr__()
+        # return """pm2 = %s, pm10 = %s,temp = %s, humi = %s,"""\
+        #        """addr = %s, datetime = %s"""%\
+        #        (self.__pm2,self.__pm10, self.__temp, self.__humi,self.__addr,self.__datetime)
 
 if __name__ == "__main__":
     hh = ["asda","safa"]

@@ -13,7 +13,7 @@ if myserial.connect_serial():
     # draw = display.display_air_quality_data()
     # draw.send(None)
 
-    while myserial.read_line():
+    while myserial.read_gift():
         # save to mysql
 
         # result = myserial.save_serial_data_to_mysql
